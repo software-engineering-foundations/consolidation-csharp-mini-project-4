@@ -1,0 +1,10 @@
+pool:
+  vmImage: ubuntu-latest
+steps:
+  - task: UseDotNet@2
+    inputs:
+      version: 6.x
+  - task: DotNetCoreCLI@2
+    displayName: 'Test'
+    inputs:
+      command: 'test'
