@@ -9,12 +9,9 @@
     <link rel="stylesheet" href="~/css/index-fcd4f3e6.css">
 </head>
 <body>
-    <div id="root">
-        <div class="container">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
-    </div>
+    @{
+        IgnoreBody();
+    }
+    <div id="root"></div>
 </body>
 </html>

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using consolidation_csharp_mini_project_3.Database;
-using consolidation_csharp_mini_project_3.Models;
+using Library.Database;
+using Library.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,12 +9,16 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-builder.Services.AddDbContext<DBContext>();
 
+builder.Services.AddTransient<IBookRepo, BookRepo>();
+builder.Services.AddTransient<ICustomerRepo, CustomerRepo>();
+builder.Services.AddTransient<ILoanRepo, LoanRepo>();
+
+builder.Services.AddDbContext<LibraryContext>();
 
 var app = builder.Build();
 
-DBPopulator.PopulateDatabase();
+DbPopulator.PopulateDatabase();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -39,6 +43,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapRazorPages();
-
 
 app.Run();

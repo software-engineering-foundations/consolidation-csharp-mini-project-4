@@ -1,54 +1,71 @@
-using consolidation_csharp_mini_project_3.Database;
-using consolidation_csharp_mini_project_3.Models;
-using consolidation_csharp_mini_project_3.Services;
+using Library.Models;
+using Library.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-namespace consolidation_csharp_mini_project_3.Controllers
+namespace Library.Controllers;
+
+[Route("books")]
+[ApiController]
+public class BookController : ControllerBase
 {
+    private readonly IBookRepo _books;
 
-    [Route("books")]
-    [ApiController]
-    public class BookController : ControllerBase
+    public BookController(IBookRepo books)
     {
-        private readonly BookService bookService;
+        _books = books;
+    }
 
-        public BookController(BookService bookService)
-        {
-            this.bookService = bookService; 
-        }
-    
-        [HttpGet]
-        public ActionResult<List<Book>> GetBooks([FromQuery] string? search)
-        {
-            return Ok(bookService.GetBooks(search));
-        }
+    [HttpGet]
+    public ActionResult GetBooks([FromQuery] string? search)
+    {
+        return Ok(_books.GetBooks(search));
+    }
 
-        [HttpGet("{id}")]
-        public ActionResult<Book> GetBookById(int id)
+    [HttpGet("{id}")]
+    public ActionResult GetBookById([FromRoute] int id)
+    {
+        try
         {
-            return Ok(bookService.GetBookById(id));
+            return Ok(_books.GetBookById(id));
         }
-
-        [HttpPost]
-        public IActionResult CreateBook([FromBody] Book model)
+        catch (InvalidOperationException)
         {
-            var book = bookService.CreateBook(model);
-            return CreatedAtAction("GetBookById", new { id = book.Id}, model);
+            return NotFound();
         }
+    }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateBook(int id, [FromBody] Book model)
+    [HttpPost]
+    public ActionResult CreateBook([FromBody] Book bookModel)
+    {
+        var newBook = _books.CreateBook(bookModel);
+        return CreatedAtAction("GetBookById", new { id = newBook.Id }, bookModel);
+    }
+
+    [HttpPut("{id}")]
+    public ActionResult UpdateBook([FromRoute] int id, [FromBody] Book bookModel)
+    {
+        try
         {
-            bookService.UpdateBook(id, model);
+            _books.UpdateBook(id, bookModel);
             return Ok();
         }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteBook(int id)
+        catch (InvalidOperationException)
         {
-            bookService.DeleteBook(id);
+            return NotFound();
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public ActionResult DeleteBook([FromRoute] int id)
+    {
+        try
+        {
+            _books.DeleteBook(id);
             return Ok();
+        }
+        catch (InvalidOperationException)
+        {
+            return NotFound();
         }
     }
 }

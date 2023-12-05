@@ -1,9 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
-namespace consolidation_csharp_mini_project_3.Models;
+namespace Library.Models;
 
 public class Loan
 {
@@ -12,19 +11,21 @@ public class Loan
 
     [Required]
     public int BookId { get; set; }
+
     [ForeignKey("BookId")]
-    public Book Book { get; set; }
+    public Book Book { get; set; } = null!;
 
     [Required]
     [MaxLength(50)]
     [JsonPropertyName("customer_library_card_number")]
-    public string CustomerLibraryCardNumber { get; set; }
+    public string CustomerLibraryCardNumber { get; set; } = null!;
+
     [ForeignKey("CustomerLibraryCardNumber")]
-    public Customer Customer { get; set; }
+    public Customer Customer { get; set; } = null!;
 
     [Required]
     [JsonPropertyName("date_loaned")]
-    [System.Text.Json.Serialization.JsonConverter(typeof(DateJsonConverter))]
+    [JsonConverter(typeof(DateJsonConverter))]
     public DateTime DateLoaned { get; set; }
 
     [Required]

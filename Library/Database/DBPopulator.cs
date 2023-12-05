@@ -1,11 +1,10 @@
-using consolidation_csharp_mini_project_3.Models;
+using Library.Models;
 
-namespace consolidation_csharp_mini_project_3.Database;
+namespace Library.Database;
 
-public static class DBPopulator
+public static class DbPopulator
 {
-    public static Book[] Books = new Book[]
-    {
+    public static Book[] Books = {
         new Book
         {
             Title = "The Witty Rascals",
@@ -357,8 +356,7 @@ public static class DBPopulator
                 "The Hungry Swans\" is a peculiar tale about a family of swans that live in a pond in a quiet park. The swans, who are known for their elegance and beauty, have a tendency to be constantly hungry. The story follows the journey of the young swan family as they go through various adventures in search of food to satisfy their endless appetite",
         },
     };
-    public static Customer[] Customers = new Customer[]
-    {
+    public static Customer[] Customers = {
         new Customer
         {
             LibraryCardNumber = "PD-569797-8874",
@@ -660,8 +658,7 @@ public static class DBPopulator
             Email = "stefa.padrick@outlook.com",
         },
     };
-    public static Loan[] Loans = new Loan[]
-    {
+    public static Loan[] Loans = {
         new Loan
         {
             BookId = 10,
@@ -2066,12 +2063,14 @@ public static class DBPopulator
 
     public static void PopulateDatabase()
     {
-        using (var context = new DBContext())
+        using var context = new LibraryContext();
+        if (context.Books.Any() || context.Customers.Any() || context.Loans.Any())
         {
-            context.Books.AddRange(Books);
-            context.Loans.AddRange(Loans);
-            context.Customers.AddRange(Customers);
-            context.SaveChanges();
+            return;
         }
+        context.Books.AddRange(Books);
+        context.Loans.AddRange(Loans);
+        context.Customers.AddRange(Customers);
+        context.SaveChanges();
     }
 }
